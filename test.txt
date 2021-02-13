@@ -4,3 +4,5 @@ test3
 =======
 test4
 >>>>>>> 3461f001f7781e642aaf8ce5befd01aaa2a19bee
+
+test6
