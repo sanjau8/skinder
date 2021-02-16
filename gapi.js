@@ -5,7 +5,7 @@ const client = new OAuth2Client("752169556635-q0u04asvqip10b7kcckntcfcltm6ek39.a
 async function verify(token) {
   const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: "752169556635-q0u04asvqip10b7kcckntcfcltm6ek39.apps.googleusercontent.com",  
+      audience: ["752169556635-q0u04asvqip10b7kcckntcfcltm6ek39.apps.googleusercontent.com", "538224454275-00gviuea25t7t987jha3hpqiuf0indan.apps.googleusercontent.com"] 
   });
   const payload = ticket.getPayload();
   
