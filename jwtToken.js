@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const jwtSql=require("./jwtSql")
 
 const ACCESS_TOKEN_SECRET="swsh23hjddnns"
-const ACCESS_TOKEN_LIFE=300
+const ACCESS_TOKEN_LIFE=3600
 const REFRESH_TOKEN_SECRET="dhw782wujnd99ahmmakhanjkajikhiwn2n"
 const REFRESH_TOKEN_LIFE=86400
 
