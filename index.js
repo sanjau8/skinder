@@ -120,18 +120,39 @@ app.post("/team2practo/auth/api/refresh",jwtApp.tokenRefresh)
 app.post('/api/upload', upload.single('myFile'),fileUpload.fileUpload)
 
 
-app.post('/team2practo/posts',jwtApp.verifyAccess,function(req,res){
+app.post('/team2practo/posts',jwtApp.verifyAccess,upload.single('myFile'),function(req,res){
 var data=req.body
 
 var uid=res.locals.uid
 data["user_id"]=uid
+
+if(!req.file){
+
 skinderSql.InsertToTable("posts",data).then(function(){
   res.send({"Message":"Posted Successfully"})
 
 }).catch(function(err){
-  res.send(err)
+  res.status(500).send(err)
 
 })
+
+}
+
+else{
+
+  fileUpload.fileUpload(req.file).then(function(url){
+    data["Image_link"]=url
+
+    skinderSql.InsertToTable("posts",data).then(function(){
+      res.send({"Message":"Posted Successfully"})
+    
+    }).catch(function(err){
+      res.status(500).send(err)
+    
+    })
+  })
+
+}
 
 
 })

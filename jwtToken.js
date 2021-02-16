@@ -35,6 +35,7 @@ function getAccessToken(payload){
 function verifyAccess(req, res, next){
 
     let accessToken = req.headers["authorization"]
+    
     if (!accessToken){
         return res.status(403).send("the token has expired or has a invalid signature")
     }

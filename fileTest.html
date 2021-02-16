@@ -7,7 +7,7 @@
     <body>
         <input type="file" id="fileUpload" />
 
-        <img src="https://storage.googleapis.com/intern-hack.appspot.com/shiva.jpg_1613472324380">
+        <!-- <img src="https://storage.googleapis.com/intern-hack.appspot.com/shiva.jpg_1613472324380"> -->
     </body>
 
     <script>
@@ -16,14 +16,22 @@
 })
 
 const handleImageUpload = event => {
+  
   const files = event.target.files
   const formData = new FormData()
   formData.append('myFile', files[0])
+  formData.append("Title","Shivammayam")
+  formData.append("Caption","Om Namashivaya")
 
-  fetch('http://localhost:3000/api/upload', {
+  var headers = new Headers();
+  headers.append('Content-Type','multipart/form-data')
+  headers.append("Authorization","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDkxNjU4ODUwMDYxNTQxMTU0MDAiLCJlbWFpbCI6InJhamlzYW52NzdAZ21haWwuY29tIiwiaWF0IjoxNjEzNDkxNDIxLCJleHAiOjE2MTM0OTUwMjF9.Z5PXT1Mz_9F77j101dxSVj21o58gPAEpndCG3CPSpdg")
+  
+  fetch('http://localhost:3000/team2practo/posts', {
     method: 'POST',
     body: formData,
-    Headers:{'Content-Type': 'multipart/form-data'}
+    Headers:headers,
+    credentials: 'include' 
   })
   .then(response => response.json())
   .then(data => {

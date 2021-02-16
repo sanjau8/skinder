@@ -13,34 +13,8 @@ const storage = new Storage({
 const bucket = storage.bucket("gs://intern-hack.appspot.com");
 
 
-function fileUpload(req,res){
-    // console.log(req.file);
 
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-
-  
-  
-
-  if (!req.file) {
-    res.status(400).send('No file uploaded.');
-    return;
-  }
-
-  uploadImageToStorage(req.file).then(function(url){
-    console.log(url)
-    res.send(url)
-  }).catch(function(){
-    console.log("error")
-    res.send("Error")
-  })
-
-}
-
-const uploadImageToStorage = (file) => {
+const fileUpload = (file) => {
   return new Promise((resolve, reject) => {
     if (!file) {
       reject('No image file');
