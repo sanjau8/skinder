@@ -1,0 +1,68 @@
+
+
+//==================tables=============================
+
+users  -> uid name  imagelink DOB
+
+
+
+posts -> pid  captions   imagelink(some default image)   upvotes  downvotes
+	  
+
+
+userPostUD ->  pid  uid  u/d    1 2 'u'    pk(pid,uid)
+
+
+userCommmentUD ->  pid  cid  u/d    1 2 'u'    pk(pid,uid)
+
+
+
+select pid and uid ... AAA-> if the value is null. insert.. if 'u'.. delete if it is 'd'  update as 'd'
+
+
+
+
+comment -> pid   cid   theComment    upperLevelCid  upvotes  downvotes
+	    1     1     hi            null
+            1     2     hello          1
+            1     3     hey            2
+upperLevelCid is null for comments for the post.
+for the replies, upperLevelCid will be the cid of the comment we're replying to.
+
+
+
+
+// ===============docs================================
+
+
+log in..... send the uid from oAuth ... we'll verify the token... send the details... uid also
+
+posts page..
+send a request with uid
+in the response..... left join posts and userPostUD and send the details....
+
+
+
+if he clicks upvote 
+operations in AAA will be done
+
+same for downvote
+
+
+
+if he clicks comment
+send a request with postid and level (null)
+
+return all data from comments where pid is postid and the FK is null
+
+
+if he clicks view thread
+send a request with cid
+
+return all data from comments where FK is cid
+
+
+
+
+Im commenting
+send comment, pid , upperLevelCid .... add this to the comment table
