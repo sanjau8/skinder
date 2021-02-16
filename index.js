@@ -163,6 +163,13 @@ app.post('/team2practo/comments',jwtApp.verifyAccess,function(req,res){
 //============== GET METHODS ===============================
 
 
+
+app.get("/",function(req,res){
+  res.send("Hi from Skinder")
+})
+
+
+
 //+++++++++++++++++++++++ USERS +++++++++++++++++++++++++++++
 
 app.get("/team2practo/users",jwtApp.verifyAccess,function(req,res){
