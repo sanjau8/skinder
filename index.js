@@ -232,6 +232,15 @@ skinderSql.selectWhere("users","user_id, name, image_link, points",undefined,"po
 
 //++++++++++++++++++++++ POSTS ++++++++++++++++++++++++++++++++++++++++++++++
 
+
+app.get("/team2practo/posts/public",function(req,res){
+skinderSql.selectWhere("posts","title,caption,image_link,upvotes,downvotes",undefined,undefined).then(function(result){
+  res.send(result)
+}).catch(function(){
+  res.status(500).send("Internal Error")
+})
+})
+
 app.get("/team2practo/posts",jwtApp.verifyAccess,function(req,res){
 
   var uid=res.locals.uid
