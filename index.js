@@ -17,12 +17,24 @@ var skinderSql=require("./skinderSql")
 
 //=============== INITIALISATIONS =================
 
+var whitelist = ['http://localhost:3000', 'http://localhost:80','http://localhost:8080']
+
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
 const app=express()
 app.use(cookieParser());
 app.use(express.json())
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-app.use(cors())
+app.use(cors(corsOptions))
 
 const port = 3000 || process.env.PORT
 
