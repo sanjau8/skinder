@@ -206,6 +206,10 @@ app.get("/",function(req,res){
 //+++++++++++++++++++++++ USERS +++++++++++++++++++++++++++++
 
 app.get("/team2practo/users",jwtApp.verifyAccess,function(req,res){
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
+  res.setHeader('Access-Control-Allow-Credentials', true);
   var uid=res.locals.uid
   skinderSql.selectWhere("users","*",`user_id='${uid}'`,undefined,undefined).then(function(result){
     res.send(result[0])
