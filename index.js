@@ -234,7 +234,7 @@ app.get("/team2practo/posts/me",jwtApp.verifyAccess,function(req,res){
   })
 })
 
-app.get("/team2practo/posts/trending",jwtApp.verifyAccess,function(req,res){
+app.get("/team2practo/posts/popular",jwtApp.verifyAccess,function(req,res){
 
   skinderSql.nonORMQuery(`select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,u.image_link as user_image,u.name from posts as p,users as u where p.user_id=u.user_id  order by upvotes+downvotes desc;
   `).then(function(result){
