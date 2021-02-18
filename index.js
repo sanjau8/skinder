@@ -17,7 +17,7 @@ var skinderSql=require("./skinderSql")
 
 //=============== INITIALISATIONS =================
 
-var whitelist = ['http://localhost:3000', 'http://localhost:80','http://localhost:8080']
+var whitelist = ['http://localhost:3000', 'http://localhost:80','http://localhost:8080','https://skinder-5d70f.web.app']
 
 var corsOptions = {
   origin: function (origin, callback) {
