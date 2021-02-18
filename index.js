@@ -244,7 +244,7 @@ skinderSql.selectWhere("posts","title,caption,image_link,upvotes,downvotes",unde
 app.get("/team2practo/posts",jwtApp.verifyAccess,function(req,res){
 
   var uid=res.locals.uid
-  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") from posts as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="${uid}") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc`).then(function(result){
+  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from posts as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="${uid}") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc`).then(function(result){
     
     res.send(result)
   })
@@ -253,7 +253,7 @@ app.get("/team2practo/posts",jwtApp.verifyAccess,function(req,res){
 app.get("/team2practo/posts/me",jwtApp.verifyAccess,function(req,res){
 
   var uid=res.locals.uid
-  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") from (select post_id,user_id,title,caption,image_link,upvotes,downvotes,timeposted from posts where user_id="${uid}") as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="${uid}") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc`).then(function(result){
+  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from (select post_id,user_id,title,caption,image_link,upvotes,downvotes,timeposted from posts where user_id="${uid}") as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="${uid}") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc`).then(function(result){
     
     res.send(result)
   })
@@ -284,7 +284,7 @@ app.get("/team2practo/posts/trending",jwtApp.verifyAccess,function(req,res){
 app.get("/team2practo/:postid/comments",jwtApp.verifyAccess,function(req,res){
   var uid=res.locals.uid
   var pid=req.params.postid
-  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.comment_id,p.post_id,p.user_id,p.comment,p.upVotes,p.downVotes,DATE_FORMAT(p.timecommented, "%H:%i %d-%m-%Y") as timeCommented,p.up_level_cid,coalesce(up.upordown,"") from comments as p LEFT JOIN (select comment_id,upordown from userCommentUd where user_id="${uid}") as up on p.comment_id=up.comment_id)as temp,users as u where temp.user_id=u.user_id and temp.up_level_cid is null and post_id=${pid} order by comment_id desc`).then(function(result){
+  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.comment_id,p.post_id,p.user_id,p.comment,p.upVotes,p.downVotes,DATE_FORMAT(p.timecommented, "%H:%i %d-%m-%Y") as timeCommented,p.up_level_cid,coalesce(up.upordown,"") as upordown from comments as p LEFT JOIN (select comment_id,upordown from userCommentUd where user_id="${uid}") as up on p.comment_id=up.comment_id)as temp,users as u where temp.user_id=u.user_id and temp.up_level_cid is null and post_id=${pid} order by comment_id desc`).then(function(result){
     
     res.send(result)
   })
@@ -294,7 +294,7 @@ app.get("/team2practo/:postid/comments",jwtApp.verifyAccess,function(req,res){
   var uid=res.locals.uid
   var cid=req.params.commentid
   
-  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.comment_id,p.post_id,p.user_id,p.comment,p.upVotes,p.downVotes,DATE_FORMAT(p.timecommented, "%H:%i %d-%m-%Y") as timeCommented,p.up_level_cid,coalesce(up.upordown,"") from comments as p LEFT JOIN (select comment_id,upordown from userCommentUd where user_id="${uid}") as up on p.comment_id=up.comment_id)as temp,users as u where temp.user_id=u.user_id and temp.up_level_cid=${cid} order by comment_id desc`).then(function(result){
+  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.comment_id,p.post_id,p.user_id,p.comment,p.upVotes,p.downVotes,DATE_FORMAT(p.timecommented, "%H:%i %d-%m-%Y") as timeCommented,p.up_level_cid,coalesce(up.upordown,"") as upordown from comments as p LEFT JOIN (select comment_id,upordown from userCommentUd where user_id="${uid}") as up on p.comment_id=up.comment_id)as temp,users as u where temp.user_id=u.user_id and temp.up_level_cid=${cid} order by comment_id desc`).then(function(result){
     
     res.send(result)
   })
