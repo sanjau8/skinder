@@ -141,7 +141,7 @@ data["user_id"]=uid
 if(!req.file){
 
 skinderSql.InsertToTable("posts",data).then(function(){
-  res.send({"Message":"Posted Successfully"})
+  res.send({"message":"Posted Successfully"})
 
 }).catch(function(err){
   res.status(500).send(err)
@@ -156,7 +156,7 @@ else{
     data["Image_link"]=url
 
     skinderSql.InsertToTable("posts",data).then(function(){
-      res.send({"Message":"Posted Successfully"})
+      res.send({"message":"Posted Successfully"})
     
     }).catch(function(err){
       res.status(500).send(err)
