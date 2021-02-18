@@ -21,9 +21,11 @@ Caption varchar(500),
 Image_Link varchar(100) default "",
 upVotes int default 0,
 downVotes int default 0,
+noOfComments int default 0,
 timePosted timestamp DEFAULT CURRENT_TIMESTAMP,
 foreign key(User_Id) references users(User_Id));
 
+alter table posts add column noOfComments int default 0;
 
 alter table posts modify column title varchar(150);
 alter table posts modify column caption varchar(500);
@@ -273,4 +275,17 @@ select * from users;
 
 select temp1.*,u.image_link as user_image,u.name from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,p.upvotes-coalesce(temp.upvotes,0)+p.downvotes-coalesce(temp.downvotes,0) as total from posts as p left join (select timeBackedup,post_id,upvotes,downvotes from postBackup where timeBackedUp<date_sub(now(),interval 3 hour)) as temp on p.post_id=temp.post_id) as temp1,users as u where temp1.user_id=u.user_id and total>0 order by total desc;
 
-call interactPost("108067550179259097224",2,'u');
+call interactPost("108067550179259097224",2,'d');
+select * from userPostUd
+
+update posts set downvotes=1 where post_id =10
+select * from postBackup;
+
+ call interactPost("109165885006154115400",9,'d')
+ 
+ 
+ select * from comments;
+ select * from posts;
+ select temp1.*,u.image_link as user_image,u.name from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,p.upvotes-coalesce(temp.upvotes,0)+p.downvotes-coalesce(temp.downvotes,0) as total from posts as p left join (select timeBackedup,post_id,upvotes,downvotes from postBackup where timeBackedUp<date_sub(now(),interval 3 hour)) as temp on p.post_id=temp.post_id) as temp1,users as u where temp1.user_id=u.user_id and total>0 order by total desc;
+
+select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from posts as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc
