@@ -15,9 +15,11 @@ var fileUpload=require("./fileUpload")
 
 var skinderSql=require("./skinderSql")
 
+// ec2-52-206-109-241.compute-1.amazonaws.com
+
 //=============== INITIALISATIONS =================
 
-var whitelist = ['http://localhost:3000', 'http://localhost:80','http://localhost:8080','https://skinder-5d70f.web.app']
+var whitelist = ['http://localhost:3000', 'http://localhost:80','http://localhost:8080','https://skinder-5d70f.web.app','https://ec2-52-206-109-241.compute-1.amazonaws.com','http://ec2-52-206-109-241.compute-1.amazonaws.com']
 
 var corsOptions = {
   origin: function (origin, callback) {
