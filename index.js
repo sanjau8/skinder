@@ -255,7 +255,7 @@ app.get("/team2practo/posts",jwtApp.verifyAccess,function(req,res){
 app.get("/team2practo/posts/me",jwtApp.verifyAccess,function(req,res){
 
   var uid=res.locals.uid
-  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from (select post_id,user_id,title,caption,image_link,upvotes,downvotes,noofcomments,timeposted from posts where user_id="109165885006154115400") as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc
+  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from (select post_id,user_id,title,caption,image_link,upvotes,downvotes,noofcomments,timeposted from posts where user_id="${uid}") as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="${uid}") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc
   `).then(function(result){
     
     res.send(result)
