@@ -30,7 +30,9 @@ alter table posts add column noOfComments int default 0;
 alter table posts modify column title varchar(150);
 alter table posts modify column caption varchar(500);
 
-
+select * from comments;
+update posts set noOfComments=4 where post_id=1;
+update posts set noOfComments=1 where post_id=4;
 create table comments ( Comment_Id int auto_increment primary key,
 Post_Id int,
 User_Id varchar(40),
@@ -84,13 +86,14 @@ begin
 update users set points=points+5 where user_id like new.user_id;
 end //
 
-
+drop trigger after_comment_insert;
 delimiter //
 create trigger after_comment_insert after insert
 on comments
 for each row
 begin
 update users set points=points+2 where user_id like new.user_id;
+update posts set noOfComments=noOfComments+1 where post_id=new.post_id;
 end //
 
 drop trigger after_postud_delete;
@@ -129,9 +132,9 @@ for each row
 begin
 set SQL_SAFE_UPDATES=0;
 if new.upOrDown like 'u' then
-update posts set upvotes=upvotes-1,downvotes=downvotes+1 where post_id=old.post_id;
+update posts set upvotes=upvotes+1,downvotes=downvotes-1 where post_id=old.post_id;
 else 
-update posts set downvotes=downvotes-1,upvotes=upvotes+1 where post_id=old.post_id;
+update posts set downvotes=downvotes+1,upvotes=upvotes-1 where post_id=old.post_id;
 end if;
 end // 
 
@@ -174,9 +177,9 @@ on userCommentUd
 for each row
 begin
 if new.upOrDown like 'u' then
-update comments set upvotes=upvotes-1,downvotes=downvotes+1 where comment_id=old.comment_id;
+update comments set upvotes=upvotes+1,downvotes=downvotes-1 where comment_id=old.comment_id;
 else 
-update comments set downvotes=downvotes-1,upvotes=upvotes+1 where comment_id=old.comment_id;
+update comments set downvotes=downvotes+1,upvotes=upvotes-1 where comment_id=old.comment_id;
 end if;
 end //
 
@@ -283,9 +286,58 @@ select * from postBackup;
 
  call interactPost("109165885006154115400",9,'d')
  
+ insert into comments(user_id,post_id,comment) values ("109165885006154115400",11,"oh yes its working");
  
- select * from comments;
+ select * from comments ;
+ delete from comments where post_id is null;
  select * from posts;
  select temp1.*,u.image_link as user_image,u.name from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,p.upvotes-coalesce(temp.upvotes,0)+p.downvotes-coalesce(temp.downvotes,0) as total from posts as p left join (select timeBackedup,post_id,upvotes,downvotes from postBackup where timeBackedUp<date_sub(now(),interval 3 hour)) as temp on p.post_id=temp.post_id) as temp1,users as u where temp1.user_id=u.user_id and total>0 order by total desc;
 
+
+
+select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,u.image_link as user_image,u.name from posts as p,users as u where p.user_id=u.user_id  and upvotes+downvotes>0 order by upvotes+downvotes desc
+
 select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from posts as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc
+
+update posts set upvotes=1 where post_id=11;
+
+select * from userPostUd;
+select * from posts;
+
+call interactPost("101300573873600641559",11,'u')
+
+insert into comments(post_id,user_id,comment) values (13,"108067550179259097224","But i hate coffee yuck");
+insert into comments(post_id,user_id,comment) values (13,"109165885006154115400","tea is love");
+
+insert into comments(post_id,user_id,comment) values (14,"108067550179259097224","oh is it?");
+insert into comments(post_id,user_id,comment) values (14,"109165885006154115400","what could i understand from this?");
+
+
+select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from posts as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id and upvotes+downvotes>0 order by upvotes+downvotes desc
+
+select temp.*,u.name,u.image_link as user_image from (select p.comment_id,p.post_id,p.user_id,p.comment,p.upVotes,p.downVotes,DATE_FORMAT(p.timecommented, "%H:%i %d-%m-%Y") as timeCommented,p.up_level_cid,coalesce(up.upordown,"") as upordown from comments as p LEFT JOIN (select comment_id,upordown from userCommentUd where user_id="109165885006154115400") as up on p.comment_id=up.comment_id)as temp,users as u where temp.user_id=u.user_id and temp.up_level_cid is null and post_id=1 order by comment_id desc
+
+
+
+select temp.*,u.name,u.image_link as user_image from (select p.comment_id,p.post_id,p.user_id,p.comment,p.upVotes,p.downVotes,DATE_FORMAT(p.timecommented, "%H:%i %d-%m-%Y") as timeCommented,p.up_level_cid,coalesce(up.upordown,"") as upordown from comments as p LEFT JOIN (select comment_id,upordown from userCommentUd where user_id="${uid}") as up on p.comment_id=up.comment_id)as temp,users as u where temp.user_id=u.user_id and temp.up_level_cid is null and post_id=${pid} order by comment_id desc
+
+
+select * from posts;
+select * from userPostUd;
+
+update posts set upvotes=1, downvotes=0 where post_id=5;
+update posts set upvotes=1, downvotes=0 where post_id=6;
+update posts set upvotes=1, downvotes=0 where post_id=7;
+
+
+update userPostUd set upordown='u' where post_id=5;
+update userPostUd set upordown='u' where post_id=6;
+update userPostUd set upordown='u' where post_id=7;
+
+
+
+
+
+select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from (select post_id,user_id,title,caption,image_link,upvotes,downvotes,noofcomments,timeposted from posts where user_id="109165885006154115400") as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc
+
+select temp2.*,u.image_link as user_image,u.name from (select temp1.*,coalesce(up.upordown,"") as upordown from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,p.upvotes-coalesce(temp.upvotes,0)+p.downvotes-coalesce(temp.downvotes,0) as total from posts as p left join (select timeBackedup,post_id,upvotes,downvotes from postBackup where timeBackedUp<date_sub(now(),interval 3 hour)) as temp on p.post_id=temp.post_id) as temp1 LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on temp1.post_id=up.post_id) as temp2 ,users as u where temp2.user_id=u.user_id and total>0 order by total desc;
