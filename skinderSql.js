@@ -4,7 +4,8 @@ const con=sqlconn.con
 
 
 function InsertToTable(tableName,data){
-
+    console.log("INSERTING INTO "+tableName)
+    console.log(data)
     const fields=Object.keys(data)
     const values=Object.values(data)
 
