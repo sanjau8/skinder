@@ -89,7 +89,8 @@ console.log(query)
 
 
 function nonORMQuery(query){
-
+    console.log("ACTUAL QUERY")
+    console.log(query)
     return new Promise(function(resolve,reject){
         con.query(query,function(err,result){
             if(err){
