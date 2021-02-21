@@ -61,7 +61,8 @@ function selectWhere(tableName,fields,conditions,orders){
     if(orders!=undefined){
         query=query+` order by ${orders}`
     }
-
+    console.log("SELECTING FROM "+tableName)
+console.log(query)
     return new Promise(function(resolve,reject){
     con.query(query,function(err,result){
         if(err){
