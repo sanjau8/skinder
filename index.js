@@ -290,7 +290,7 @@ app.get("/team2practo/posts/trending",jwtApp.verifyAccess,function(req,res){
 app.get("/team2practo/:postid/comments",jwtApp.verifyAccess,function(req,res){
   var uid=res.locals.uid
   var pid=req.params.postid
-  skinderSql.nonORMQuery(`select temp.*,u.name,u.image_link as user_image from (select p.comment_id,p.post_id,p.user_id,p.comment,p.upVotes,p.downVotes,DATE_FORMAT(p.timecommented, "%H:%i %d-%m-%Y") as timeCommented,p.up_level_cid,coalesce(up.upordown,"") as upordown from comments as p LEFT JOIN (select comment_id,upordown from userCommentUd where user_id="${uid}") as up on p.comment_id=up.comment_id)as temp,users as u where temp.user_id=u.user_id and temp.up_level_cid is null and post_id=${pid} order by comment_id desc`).then(function(result){
+  skinderSql.nonORMQuery(`select temp1.*,coalesce(temp2.noofthreads,0) as noofthreads from (select temp.*,u.name,u.image_link as user_image from (select p.comment_id,p.post_id,p.user_id,p.comment,p.upVotes,p.downVotes,DATE_FORMAT(p.timecommented, "%H:%i %d-%m-%Y") as timeCommented,p.up_level_cid,coalesce(up.upordown,"") as upordown from comments as p LEFT JOIN (select comment_id,upordown from userCommentUd where user_id="${uid}") as up on p.comment_id=up.comment_id)as temp,users as u where temp.user_id=u.user_id and temp.up_level_cid is null and post_id=${pid}) as temp1 LEFT JOIN (select up_level_cid as comment_id,count(*) as noofthreads from comments group by up_level_cid having up_level_cid is not null) as temp2 on temp1.comment_id=temp2.comment_id order by comment_id desc`).then(function(result){
     
     res.send(result)
   })

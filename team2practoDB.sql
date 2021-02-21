@@ -33,6 +33,7 @@ alter table posts modify column caption varchar(500);
 select * from comments;
 update posts set noOfComments=4 where post_id=1;
 update posts set noOfComments=1 where post_id=4;
+
 create table comments ( Comment_Id int auto_increment primary key,
 Post_Id int,
 User_Id varchar(40),
@@ -41,9 +42,13 @@ up_level_cid int default null,
 upVotes int default 0,
 downVotes int default 0,
 timeCommented timestamp DEFAULT CURRENT_TIMESTAMP,
+noOfThreads int default 0,
 foreign key(Post_Id) references posts(Post_Id),
 foreign key(User_Id) references users(user_Id),
 foreign key(up_level_cid) references comments(Comment_Id));
+
+
+alter table comments add column noOfThreads int default 0;
 
 create table userPostUd (Post_Id int,
 User_Id varchar(40),
@@ -87,6 +92,7 @@ update users set points=points+5 where user_id like new.user_id;
 end //
 
 drop trigger after_comment_insert;
+
 delimiter //
 create trigger after_comment_insert after insert
 on comments
@@ -335,9 +341,23 @@ update userPostUd set upordown='u' where post_id=6;
 update userPostUd set upordown='u' where post_id=7;
 
 
+select * from userPostUd;
 
 
+delete from posts where post_id>18;
 
+delete from postBackup where post_id>18;
+
+select * from posts;
+
+select * from comments;
+
+delete from comments where post_id is null;
+
+update posts set upvotes=1, downvotes=1 where post_id=14;
+
+
+select * from users;
 select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from (select post_id,user_id,title,caption,image_link,upvotes,downvotes,noofcomments,timeposted from posts where user_id="109165885006154115400") as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc
 
 select temp2.*,u.image_link as user_image,u.name from (select temp1.*,coalesce(up.upordown,"") as upordown from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,p.upvotes-coalesce(temp.upvotes,0)+p.downvotes-coalesce(temp.downvotes,0) as total from posts as p left join (select timeBackedup,post_id,upvotes,downvotes from postBackup where timeBackedUp<date_sub(now(),interval 3 hour)) as temp on p.post_id=temp.post_id) as temp1 LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on temp1.post_id=up.post_id) as temp2 ,users as u where temp2.user_id=u.user_id and total>0 order by total desc;
