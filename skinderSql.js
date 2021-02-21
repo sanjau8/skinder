@@ -30,6 +30,7 @@ function InsertToTable(tableName,data){
 
     const query=`insert into ${tableName} (${sqlField}) values (${sqlValues})`
 
+    console.log(query)
     return new Promise(function(resolve,reject){
 
         con.query(query,function(err,result){

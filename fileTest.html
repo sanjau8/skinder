@@ -5,7 +5,12 @@
     </head>
 
     <body>
+
+      <input type="text" placeholder="title" id="title">
+      <textarea type="text" placeholder="caption" id="caption"> </textarea>
+
         <input type="file" id="fileUpload" />
+        <input type="button" onclick="clicked()" value="submit">
 
         <!-- <img src="https://storage.googleapis.com/intern-hack.appspot.com/shiva.jpg_1613472324380"> -->
     </body>
@@ -14,6 +19,38 @@
         document.querySelector('#fileUpload').addEventListener('change', event => {
   handleImageUpload(event)
 })
+
+function clicked(){
+  var title=document.getElementById("title").value
+  var caption=document.getElementById("caption").value
+  
+  const formData = new FormData()
+  
+  formData.append("Title",title)
+  formData.append("Caption",caption)
+
+  var headers = new Headers();
+  headers.append('Content-Type','multipart/form-data')
+  headers.append("Authorization","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMTc0NjcwMzI2NTEwNTM5ODc3MDEiLCJlbWFpbCI6InNhbmpheS5iaGFyYWR3YWpAcHJhY3RvLmNvbSIsImlhdCI6MTYxMzkxMTU4NiwiZXhwIjoxNjEzOTE1MTg2fQ.iOgjPZa6LBUm9QhT0hXO6iDXQVAHTyOxONEko0ZlI7U")
+  
+  fetch('http://ec2-52-206-109-241.compute-1.amazonaws.com/team2practo/posts', {
+    method: 'POST',
+    body: formData,
+    Headers:headers,
+    credentials: 'include' 
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+  })
+  .catch(error => {
+    console.error(error)
+  })
+}
+
+
+
+
 
 const handleImageUpload = event => {
   
@@ -25,9 +62,9 @@ const handleImageUpload = event => {
 
   var headers = new Headers();
   headers.append('Content-Type','multipart/form-data')
-  headers.append("Authorization","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDkxNjU4ODUwMDYxNTQxMTU0MDAiLCJlbWFpbCI6InJhamlzYW52NzdAZ21haWwuY29tIiwiaWF0IjoxNjEzNDkxNDIxLCJleHAiOjE2MTM0OTUwMjF9.Z5PXT1Mz_9F77j101dxSVj21o58gPAEpndCG3CPSpdg")
+  headers.append("Authorization","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMTc0NjcwMzI2NTEwNTM5ODc3MDEiLCJlbWFpbCI6InNhbmpheS5iaGFyYWR3YWpAcHJhY3RvLmNvbSIsImlhdCI6MTYxMzkxMTU4NiwiZXhwIjoxNjEzOTE1MTg2fQ.iOgjPZa6LBUm9QhT0hXO6iDXQVAHTyOxONEko0ZlI7U")
   
-  fetch('http://localhost:3000/team2practo/posts', {
+  fetch('http://http://ec2-52-206-109-241.compute-1.amazonaws.com/team2practo/posts', {
     method: 'POST',
     body: formData,
     Headers:headers,
