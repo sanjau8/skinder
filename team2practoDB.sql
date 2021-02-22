@@ -42,7 +42,6 @@ up_level_cid int default null,
 upVotes int default 0,
 downVotes int default 0,
 timeCommented timestamp DEFAULT CURRENT_TIMESTAMP,
-noOfThreads int default 0,
 foreign key(Post_Id) references posts(Post_Id),
 foreign key(User_Id) references users(user_Id),
 foreign key(up_level_cid) references comments(Comment_Id));
@@ -100,7 +99,12 @@ for each row
 begin
 update users set points=points+2 where user_id like new.user_id;
 update posts set noOfComments=noOfComments+1 where post_id=new.post_id;
+
+
 end //
+
+
+
 
 drop trigger after_postud_delete;
 delimiter //
@@ -356,8 +360,31 @@ delete from comments where post_id is null;
 
 update posts set upvotes=1, downvotes=1 where post_id=14;
 
+select * from comments;
 
+insert into comments(post_id,user_id,comment,up_level_cid) values (1,"117467032651053987701","check no of threads",1);
 select * from users;
 select temp.*,u.name,u.image_link as user_image from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,coalesce(up.upordown,"") as upordown from (select post_id,user_id,title,caption,image_link,upvotes,downvotes,noofcomments,timeposted from posts where user_id="109165885006154115400") as p LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on p.post_id=up.post_id)as temp,users as u where temp.user_id=u.user_id order by post_id desc
 
-select temp2.*,u.image_link as user_image,u.name from (select temp1.*,coalesce(up.upordown,"") as upordown from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,p.upvotes-coalesce(temp.upvotes,0)+p.downvotes-coalesce(temp.downvotes,0) as total from posts as p left join (select timeBackedup,post_id,upvotes,downvotes from postBackup where timeBackedUp<date_sub(now(),interval 3 hour)) as temp on p.post_id=temp.post_id) as temp1 LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on temp1.post_id=up.post_id) as temp2 ,users as u where temp2.user_id=u.user_id and total>0 order by total desc;
+
+select up_level_cid,count(*) as noofthreads from comments group by up_level_cid having up_level_cid is not null;
+select * from comments;
+
+select up_level_cid as comment_id,count(*) as noofthreads from comments group by up_level_cid having up_level_cid is not null;
+select temp1.*,coalesce(temp2.noofthreads,0) as noofthreads from (select temp.*,u.name,u.image_link as user_image from (select p.comment_id,p.post_id,p.user_id,p.comment,p.upVotes,p.downVotes,DATE_FORMAT(p.timecommented, "%H:%i %d-%m-%Y") as timeCommented,p.up_level_cid,coalesce(up.upordown,"") as upordown from comments as p LEFT JOIN (select comment_id,upordown from userCommentUd where user_id="109165885006154115400") as up on p.comment_id=up.comment_id)as temp,users as u where temp.user_id=u.user_id and temp.up_level_cid is null and post_id=1) as temp1 LEFT JOIN (select up_level_cid as comment_id,count(*) as noofthreads from comments group by up_level_cid having up_level_cid is not null) as temp2 on temp1.comment_id=temp2.comment_id order by comment_id desc
+
+
+select temp2.*,u.image_link as user_image,u.name from (select temp1.*,coalesce(up.upordown,"") as upordown from (select p.post_id,p.user_id,p.title,p.caption,p.image_link,p.upvotes,p.downvotes,p.noofcomments,DATE_FORMAT(p.timeposted, "%H:%i %d-%m-%Y") as timeposted,p.upvotes-coalesce(temp.upvotes,0)+p.downvotes-coalesce(temp.downvotes,0) as total from posts as p left join (select timeBackedup,post_id,upvotes,downvotes from postBackup where timeBackedUp<date_sub(now(),interval 3 hour)) as temp on p.post_id=temp.post_id) as temp1 LEFT JOIN (select post_id,upordown from userPostUd where user_id="109165885006154115400") as up on temp1.post_id=up.post_id) as temp2 ,users as u where temp2.user_id=u.user_id and total>0 order by total desc
+
+update comments set up_level_cid=null where comment_id>=1;
+delete from comments where comment_id>=1;
+delete from userCommentUd where comment_id>=1;
+
+delete from postBackup where post_id>=1;
+
+select * from comments;
+
+delete from posts where post_id>=1;
+update users set points=0 where user_id!="1";
+select * from users;
+

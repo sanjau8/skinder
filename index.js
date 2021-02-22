@@ -224,7 +224,7 @@ app.get("/team2practo/users",jwtApp.verifyAccess,function(req,res){
 
 app.get("/team2practo/users/leaderboard",function(req,res){
 
-skinderSql.selectWhere("users","user_id, name, image_link, points",undefined,"points desc, joinedOn").then(function(result){
+skinderSql.selectWhere("users","user_id, name, image_link, points","points>0","points desc, joinedOn").then(function(result){
   res.send(result)
 })
 
